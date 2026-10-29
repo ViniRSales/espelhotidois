@@ -30,7 +30,7 @@ function AppHeader() {
     return (
         <header className='relative z-30 border-b border-border/15 bg-surface'>
             <div className='container-pagina flex h-18 items-center gap-4 md:h-20 md:gap-6 xl:gap-8'>
-                <Logo className='max-sm:hidden' />
+                <Logo />
                 <SearchBar className='flex-1 lg:max-w-xl' />
                 {logado && (
                     <>

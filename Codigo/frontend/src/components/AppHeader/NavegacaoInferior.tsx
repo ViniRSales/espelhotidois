@@ -9,7 +9,7 @@ function NavegacaoInferior() {
             aria-label='Principal'
             className='fixed inset-x-0 bottom-0 z-30 border-t border-border/15 bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden'
         >
-            <ul className='mx-auto flex max-w-md justify-around'>
+            <ul className='flex'>
                 {NAVEGACAO.map(({ rotulo, para, icone: Icone }) => (
                     <li key={para} className='flex-1'>
                         <NavLink
