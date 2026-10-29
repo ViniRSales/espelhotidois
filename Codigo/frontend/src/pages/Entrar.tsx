@@ -19,7 +19,6 @@ import { ApiError } from '@/services/api';
 
 import type { EstadoSenhaAlterada } from './RedefinirSenha';
 
-/** Login. Depois de entrar, a RotaVisitante leva à Home (ou de volta à tela protegida que a pessoa tentou abrir). */
 function Entrar() {
     const { entrar } = useAutenticacao();
     const location = useLocation();

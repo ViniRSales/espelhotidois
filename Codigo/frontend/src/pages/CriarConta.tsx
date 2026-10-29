@@ -31,7 +31,6 @@ const VAZIO: FormularioCadastro = {
     tipo: 'PESSOA_FISICA', nome: '', email: '', telefone: '', local: null, senha: '',
 };
 
-/** Cadastro de pessoa física ou instituição. Ao criar a conta, a pessoa já entra (a RotaVisitante leva à Home). */
 function CriarConta() {
     const { cadastrar } = useAutenticacao();
     const location = useLocation();
@@ -72,7 +71,6 @@ function CriarConta() {
                 nome: formulario.nome.trim(),
                 email: formulario.email.trim(),
                 telefone: soDigitos(formulario.telefone),
-                // O campo único de localização já vem separado da sugestão escolhida.
                 bairro: formulario.local!.bairro,
                 cidade: formulario.local!.cidade,
                 uf: formulario.local!.uf,
@@ -156,7 +154,6 @@ function CriarConta() {
                     hint='Digite e escolha seu bairro na lista.'
                     value={formulario.local}
                     onChange={(local) => alterar('local', local)}
-                    // O aviso da localização atual some quando a pessoa escolhe um bairro na lista.
                     error={erros.local ?? (formulario.local ? undefined : localizacaoAtual.mensagem ?? undefined)}
                     action={
                         <button

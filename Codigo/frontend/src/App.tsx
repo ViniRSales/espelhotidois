@@ -1,4 +1,3 @@
-
 import { Route, Routes } from 'react-router';
 
 import RotaProtegida from '@/features/autenticacao/RotaProtegida';
@@ -27,7 +26,6 @@ function App() {
     <Routes>
       <Route element={<MainLayout />}>
         <Route path='/' element={<Home />} />
-        {/* Cadastrar itens exige login. A API também barra; isto só evita abrir uma tela que não vai funcionar. */}
         <Route element={<RotaProtegida />}>
           <Route path='/adicionar' element={<Adicionar />} />
           <Route path='/adicionar/item/:id?' element={<CadastrarItem />} />
@@ -36,7 +34,6 @@ function App() {
           <Route path='/adicionar/pedido/:id/publicado' element={<PedidoPublicado />} />
           <Route path='/pedidos/:id/editar' element={<EditarSolicitacao />} />
           <Route path='/menu' element={<Menu />} />
-          {/* Provisórias: telas de outras issues, já ligadas à navegação do cabeçalho. */}
           <Route path='/bate-papo' element={<EmConstrucao />} />
           <Route path='/voce' element={<EmConstrucao />} />
           <Route path='/localizacao' element={<EmConstrucao />} />
@@ -53,7 +50,6 @@ function App() {
           <Route path='/criar-conta' element={<CriarConta />} />
           <Route path='/esqueci-senha' element={<EsqueciSenha />} />
         </Route>
-        {/* Abre logado ou não: o link do e-mail pode ser aberto num aparelho em que a pessoa ainda está logada. */}
         <Route path='/redefinir-senha' element={<RedefinirSenha />} />
       </Route>
       <Route path='/theme' element={<ThemeDisplay />} />

@@ -3,7 +3,6 @@ import { Search } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 
-/** Busca do cabeçalho: leva a `/buscar?q=`. */
 function SearchBar({ className }: { className?: string }) {
     const navigate = useNavigate();
     const [parametros] = useSearchParams();

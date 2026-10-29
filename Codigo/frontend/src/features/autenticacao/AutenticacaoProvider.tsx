@@ -11,12 +11,7 @@ type Estado = { situacao: SituacaoSessao; usuario: Usuario | null; saiu: boolean
 
 const VISITANTE: Estado = { situacao: 'visitante', usuario: null, saiu: false };
 
-/**
- * Guarda quem está logado. Ao abrir o app com um token salvo, confirma com a API (`GET /auth/eu`)
- * antes de considerar a pessoa logada; um 401 em qualquer chamada encerra a sessão.
- */
 function AutenticacaoProvider({ children }: { children: ReactNode }) {
-    // Lido uma vez só, na montagem: o token salvo decide se começamos verificando ou como visitante.
     const [sessaoInicial] = useState<SessaoSalva | null>(() => lerSessaoSalva());
     const [estado, setEstado] = useState<Estado>(() =>
         sessaoInicial ? { situacao: 'verificando', usuario: null, saiu: false } : VISITANTE,
@@ -40,8 +35,6 @@ function AutenticacaoProvider({ children }: { children: ReactNode }) {
             })
             .catch((erro: unknown) => {
                 if (!ativo) return;
-                // 401 já encerrou a sessão (aoExpirarSessao). Sem conexão, segue como visitante sem apagar o token:
-                // na próxima vez que abrir o app, ele é conferido de novo.
                 if (!(erro instanceof ApiError && erro.status === 401)) {
                     definirToken(null);
                     setEstado(VISITANTE);
@@ -63,18 +56,12 @@ function AutenticacaoProvider({ children }: { children: ReactNode }) {
     }, [iniciar]);
 
     const cadastrar = useCallback(async (dados: DadosCadastro) => {
-        // A API devolve a sessão estendida (7 dias) para quem acabou de criar a conta.
         iniciar(await servico.cadastrar(dados), true);
     }, [iniciar]);
 
     const sair = useCallback(async () => {
-        try {
-            await servico.sair();
-        } catch {
-            // Sem conexão ou token já vencido: a sessão local é encerrada do mesmo jeito.
-        } finally {
-            encerrarLocal(true);
-        }
+        await servico.sair().catch(() => undefined);
+        encerrarLocal(true);
     }, [encerrarLocal]);
 
     const valor = useMemo<Autenticacao>(

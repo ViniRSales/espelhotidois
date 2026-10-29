@@ -7,7 +7,6 @@ import { afterEach } from 'vitest';
 // Sem os globais do Vitest, o Testing Library não desmonta os componentes sozinho entre os testes.
 afterEach(() => {
     cleanup();
-    // A sessão de login fica no storage; cada teste começa sem ninguém logado.
     localStorage.clear();
     sessionStorage.clear();
 });

@@ -42,10 +42,6 @@ import br.pucminas.doapp.service.email.EnvioEmail;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
-/**
- * Confere, num MongoDB de verdade, o que cada fluxo grava no banco: passa pela API inteira (segurança, validação,
- * serviços) e lê as coleções direto, sem os repositórios. Precisa de Docker; sem ele, os testes são pulados.
- */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers(disabledWithoutDocker = true)
@@ -63,11 +59,9 @@ class PersistenciaMongoTest {
         registro.add("doapp.doacoes.fotos.diretorio", fotos::toString);
     }
 
-    /** Os limites contra força bruta têm testes próprios; aqui atrapalhariam os vários cadastros seguidos. */
     @MockitoBean
     private LimiteTentativas limite;
 
-    /** Sem servidor de e-mail: o teste lê o link que seria enviado. */
     @MockitoBean
     private EnvioEmail email;
 
@@ -141,10 +135,8 @@ class PersistenciaMongoTest {
                 .containsEntry("cidade", "Belo Horizonte")
                 .containsEntry("uf", "MG");
         assertThat(conta.getDate("criadoEm")).isNotNull();
-        // A senha nunca é guardada como texto: só o hash BCrypt.
         assertThat(conta.getString("senhaHash")).startsWith("$2").doesNotContain("segredo123");
         assertThat(conta.toJson()).doesNotContain("segredo123");
-        // E o hash nunca volta para o front-end.
         assertThat(sessao.toString()).doesNotContain("senhaHash").doesNotContain("$2");
     }
 
@@ -184,9 +176,7 @@ class PersistenciaMongoTest {
         assertThat(revogado).isNotNull();
         assertThat(revogado.getString("_id")).isNotBlank();
         assertThat(revogado.getDate("expiraEm").toInstant()).isAfter(Instant.now());
-        // O índice TTL faz o próprio MongoDB apagar o registro quando o token venceria.
         assertThat(temIndice("tokens_revogados", "expiraEm", "expireAfterSeconds")).isTrue();
-        // E o token deixa de valer.
         mvc.perform(get("/api/auth/eu").header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized());
     }
@@ -209,7 +199,6 @@ class PersistenciaMongoTest {
         Document pedido = banco.getCollection("redefinicoes_senha").find().first();
         assertThat(pedido).isNotNull();
         assertThat(pedido.getString("usuarioId")).isEqualTo(usuario("maria@email.com").getObjectId("_id").toHexString());
-        // O banco guarda só o SHA-256 do token: quem lê o banco não consegue usar o link.
         assertThat(pedido.getString("tokenHash")).isEqualTo(sha256(tokenDoLink)).isNotEqualTo(tokenDoLink);
         assertThat(pedido.toJson()).doesNotContain(tokenDoLink);
         assertThat(temIndice("redefinicoes_senha", "expiraEm", "expireAfterSeconds")).isTrue();
@@ -224,7 +213,6 @@ class PersistenciaMongoTest {
         assertThat(conta.getInteger("versaoSessao")).isEqualTo(1);
         assertThat(conta.getDate("senhaAlteradaEm")).isNotNull();
         assertThat(banco.getCollection("redefinicoes_senha").countDocuments()).isZero();
-        // O link não vale de novo, a sessão antiga caiu e só a senha nova entra.
         mvc.perform(post("/api/auth/redefinir-senha").contentType(MediaType.APPLICATION_JSON).content(corpo))
                 .andExpect(status().isBadRequest());
         mvc.perform(get("/api/auth/eu").header("Authorization", "Bearer " + tokenAntigo))
@@ -258,7 +246,6 @@ class PersistenciaMongoTest {
         assertThat(doacao.getString("descricao")).isEqualTo("Pouco usada");
         assertThat(doacao.get("localizacao", Document.class)).containsEntry("bairro", "Savassi");
 
-        // Outra pessoa não consegue apagar o rascunho; o dono consegue, e ele sai do banco.
         cadastrar("joao@email.com");
         String outro = entrar("joao@email.com", "segredo123");
         mvc.perform(delete("/api/doacoes/" + id).header("Authorization", "Bearer " + outro))

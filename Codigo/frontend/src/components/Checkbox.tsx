@@ -5,7 +5,6 @@ interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'typ
     description?: string;
 }
 
-/** Caixa de seleção nativa (funciona com teclado e leitor de tela) com rótulo e descrição. */
 function Checkbox({ label, description, className, ...props }: CheckboxProps) {
     const id = useId();
 

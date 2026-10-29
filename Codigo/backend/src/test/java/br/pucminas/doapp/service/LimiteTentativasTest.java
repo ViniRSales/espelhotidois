@@ -17,7 +17,6 @@ class LimiteTentativasTest {
 
     static final Duration JANELA = Duration.ofMinutes(15);
 
-    /** Relógio que o teste avança à mão. */
     static class RelogioManual extends Clock {
         Instant agora = Instant.parse("2026-10-28T12:00:00Z");
 

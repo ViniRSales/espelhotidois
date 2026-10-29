@@ -15,11 +15,6 @@ function posicaoAtual() {
   });
 }
 
-/**
- * "Usar minha localização atual" do cadastro de conta: pede a posição ao navegador e a converte em bairro, cidade
- * e UF. É o mesmo caminho do `useGeolocalizacao` do cadastro de doação, mas também traz o estado.
- * A posição exata nunca é guardada nem enviada à API: só o bairro.
- */
 export function useLocalizacaoAtual() {
   const [buscando, setBuscando] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);

@@ -5,10 +5,6 @@ import { useNavigate } from 'react-router';
 import PageHeader from '@/components/PageHeader';
 import { useAutenticacao } from '@/features/autenticacao/useAutenticacao';
 
-/**
- * Menu da conta (wireframe "Desktop / Menu"). Por enquanto só tem "Sair"; preferências e edição da conta
- * entram com as próximas issues.
- */
 function Menu() {
     const { sair } = useAutenticacao();
     const navigate = useNavigate();

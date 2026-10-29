@@ -12,14 +12,9 @@ import org.springframework.stereotype.Component;
 
 import br.pucminas.doapp.exception.MuitasTentativasException;
 
-/**
- * Conta tentativas por chave (por exemplo, "login:IP") numa janela de tempo deslizante e barra quando passam do
- * limite. Fica na memória: basta para uma instância só da API; com várias, o ideal é guardar no banco ou num Redis.
- */
 @Component
 public class LimiteTentativas {
 
-    /** Acima disto, as chaves vencidas são limpas, para a memória não crescer sem fim. */
     private static final int LIMPAR_ACIMA_DE = 10_000;
 
     private final Map<String, Deque<Instant>> tentativas = new ConcurrentHashMap<>();
@@ -29,7 +24,6 @@ public class LimiteTentativas {
         this.relogio = relogio;
     }
 
-    /** Lança 429 se a chave já tem {@code maximo} tentativas dentro da janela. */
     public void conferir(String chave, int maximo, Duration janela, String mensagem) {
         Deque<Instant> registro = tentativas.get(chave);
         if (registro == null) {
@@ -54,7 +48,6 @@ public class LimiteTentativas {
         }
     }
 
-    /** Esquece as tentativas da chave (por exemplo, depois de um login certo). */
     public void limpar(String chave) {
         tentativas.remove(chave);
     }

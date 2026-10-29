@@ -21,14 +21,12 @@ import br.pucminas.doapp.model.Usuario;
 import br.pucminas.doapp.repository.UsuarioRepository;
 import br.pucminas.doapp.service.TokenService.TokenEmitido;
 
-/** Cadastro, login, logout e os dados da conta logada. */
 @Service
 public class AutenticacaoService {
 
     static final String CREDENCIAIS_INVALIDAS = "E-mail ou senha incorretos.";
     static final String EMAIL_EM_USO = "Já existe uma conta com este e-mail.";
 
-    /** O BCrypt só considera os primeiros 72 bytes; acentos ocupam mais de um byte. */
     private static final int SENHA_MAXIMO_BYTES = 72;
 
     private final UsuarioRepository usuarios;
@@ -36,7 +34,6 @@ public class AutenticacaoService {
     private final TokenService tokens;
     private final ControleAcessoService acesso;
     private final Clock relogio;
-    /** Conferido quando o e-mail não existe, para o login demorar o mesmo e não revelar quais e-mails têm conta. */
     private final String hashFalso;
 
     public AutenticacaoService(UsuarioRepository usuarios, PasswordEncoder senhas, TokenService tokens,
@@ -49,7 +46,6 @@ public class AutenticacaoService {
         this.hashFalso = senhas.encode("senha-que-nao-existe-em-nenhuma-conta");
     }
 
-    /** Cria a conta e já devolve uma sessão estendida: quem acabou de se cadastrar não precisa entrar de novo. */
     public SessaoResposta cadastrar(CadastroRequisicao dados) {
         if (senhaLongaDemais(dados.senha())) {
             throw new DadosInvalidosException("senha", "Use no máximo 72 caracteres.");
@@ -62,13 +58,11 @@ public class AutenticacaoService {
         try {
             usuario = usuarios.save(usuario);
         } catch (DuplicateKeyException ex) {
-            // Outro cadastro com o mesmo e-mail chegou ao mesmo tempo; o índice único barrou.
             throw new ConflitoException(EMAIL_EM_USO);
         }
         return sessao(usuario, true);
     }
 
-    /** Lança 401 com a mesma mensagem para e-mail inexistente e senha errada. */
     public SessaoResposta entrar(LoginRequisicao dados) {
         if (senhaLongaDemais(dados.senha())) {
             throw new NaoAutenticadoException(CREDENCIAIS_INVALIDAS);
@@ -84,11 +78,9 @@ public class AutenticacaoService {
     public UsuarioResposta usuarioAtual() {
         return usuarios.findById(acesso.idUsuarioAtual())
                 .map(UsuarioResposta::de)
-                // Token válido de uma conta que não existe mais.
                 .orElseThrow(() -> new NaoAutenticadoException("Entre na sua conta para continuar."));
     }
 
-    /** Encerra o token usado nesta requisição. Sem token (outro tipo de autenticação), não há o que encerrar. */
     public void sair(Jwt token) {
         if (token != null) {
             tokens.revogar(token);
@@ -100,7 +92,6 @@ public class AutenticacaoService {
         return new SessaoResposta(token.token(), token.expiraEm(), UsuarioResposta.de(usuario));
     }
 
-    /** O BCrypt só considera 72 bytes; usado também na redefinição de senha. */
     static boolean senhaLongaDemais(String senha) {
         return senha.getBytes(StandardCharsets.UTF_8).length > SENHA_MAXIMO_BYTES;
     }

@@ -54,7 +54,6 @@ class AutenticacaoControllerTest {
         }
     }
 
-    /** Cada teste de limite usa um IP próprio: o contador vive no contexto, que é compartilhado entre os testes. */
     static RequestPostProcessor ip(String endereco) {
         return requisicao -> {
             requisicao.setRemoteAddr(endereco);
@@ -80,7 +79,6 @@ class AutenticacaoControllerTest {
     @MockitoBean
     private TokenRevogadoRepository tokensRevogados;
 
-    /** Usado pelo JwtDecoder para conferir se a sessão do token ainda vale. */
     @MockitoBean
     private UsuarioRepository usuarios;
 
@@ -104,7 +102,6 @@ class AutenticacaoControllerTest {
                 .andExpect(jsonPath("$.usuario.email").value("maria@email.com"))
                 .andExpect(jsonPath("$.usuario.senhaHash").doesNotExist());
 
-        // O DTO chega normalizado ao serviço.
         verify(service).cadastrar(argThat((CadastroRequisicao dados) ->
                 dados.email().equals("maria@email.com") && dados.telefone().equals("31999998888")
                         && dados.uf().equals("MG")));
@@ -179,7 +176,6 @@ class AutenticacaoControllerTest {
                 .andExpect(status().isTooManyRequests())
                 .andExpect(jsonPath("$.mensagem").value("Muitas tentativas de entrar. Espere 15 minutos e tente de novo."));
         verify(service, org.mockito.Mockito.times(5)).entrar(any());
-        // A dona da conta, de outro aparelho (outro IP), continua conseguindo entrar.
         mvc.perform(post("/api/auth/login").with(ip("10.0.0.2")).contentType(MediaType.APPLICATION_JSON).content(errado))
                 .andExpect(status().isUnauthorized());
     }

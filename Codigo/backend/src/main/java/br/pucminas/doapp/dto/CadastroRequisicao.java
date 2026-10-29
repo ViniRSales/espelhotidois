@@ -9,11 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-/**
- * Dados para criar uma conta. Os textos chegam normalizados (sem espaços nas pontas, e-mail em minúsculas,
- * telefone só com dígitos) antes da validação. O front-end repete estas regras em
- * {@code features/autenticacao/validacao.ts}.
- */
 public record CadastroRequisicao(
         @NotNull(message = "Conte se você é pessoa física ou instituição.")
         TipoConta tipo,
@@ -52,7 +47,6 @@ public record CadastroRequisicao(
     static final String TELEFONE_INVALIDO = "Informe o telefone com DDD.";
     static final String SENHA_CURTA = "A senha precisa ter pelo menos 8 caracteres.";
     static final String UF_INVALIDA = "Informe o estado.";
-    /** Siglas das 27 unidades da federação. */
     static final String UFS = "AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO";
 
     public CadastroRequisicao {
@@ -64,7 +58,6 @@ public record CadastroRequisicao(
         uf = uf == null ? null : uf.strip().toUpperCase(Locale.ROOT);
     }
 
-    /** Nunca mostra a senha em logs ou mensagens de erro. */
     @Override
     public String toString() {
         return "CadastroRequisicao[tipo=%s, email=%s]".formatted(tipo, email);

@@ -24,7 +24,6 @@ import br.pucminas.doapp.repository.RedefinicaoSenhaRepository;
 import br.pucminas.doapp.repository.UsuarioRepository;
 import br.pucminas.doapp.service.email.EnvioEmail;
 
-/** "Esqueci minha senha": envia o link por e-mail e troca a senha com o token desse link. */
 @Service
 public class RecuperacaoSenhaService {
 
@@ -50,10 +49,6 @@ public class RecuperacaoSenhaService {
         this.relogio = relogio;
     }
 
-    /**
-     * Envia o link se o e-mail tiver conta. Não devolve nada nem lança erro quando a conta não existe ou quando
-     * já houve um pedido recente: a resposta da API é sempre a mesma, para não revelar quais e-mails têm cadastro.
-     */
     public void pedir(String emailNormalizado) {
         Optional<Usuario> encontrado = usuarios.findByEmail(emailNormalizado);
         if (encontrado.isEmpty()) {
@@ -75,7 +70,6 @@ public class RecuperacaoSenhaService {
                 texto(usuario.getNome(), link), html(usuario.getNome(), link));
     }
 
-    /** Troca a senha e encerra todas as sessões da conta. O link vale uma vez só. */
     public void redefinir(String token, String novaSenha) {
         if (AutenticacaoService.senhaLongaDemais(novaSenha)) {
             throw new DadosInvalidosException("senha", "Use no máximo 72 caracteres.");
@@ -87,13 +81,11 @@ public class RecuperacaoSenhaService {
         Usuario usuario = usuarios.findById(pedido.getUsuarioId())
                 .orElseThrow(() -> new DadosInvalidosException("token", LINK_INVALIDO));
 
-        // Apaga antes de trocar a senha: o mesmo link não pode ser usado de novo, nem os outros pedidos da conta.
         redefinicoes.deleteByUsuarioId(usuario.getId());
         usuario.redefinirSenha(senhas.encode(novaSenha), agora);
         usuarios.save(usuario);
     }
 
-    /** 32 bytes aleatórios em Base64 URL: impossível de adivinhar e seguro dentro de um link. */
     static String gerarToken() {
         byte[] bytes = new byte[32];
         ALEATORIO.nextBytes(bytes);

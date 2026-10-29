@@ -3,7 +3,6 @@ import { NavLink } from 'react-router';
 
 import { NAVEGACAO } from './navegacao';
 
-/** Barra de navegação fixa embaixo da tela no celular e no tablet (como no wireframe mobile). */
 function NavegacaoInferior() {
     return (
         <nav

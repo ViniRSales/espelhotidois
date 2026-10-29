@@ -12,10 +12,8 @@ import { useFocoNoErro } from '@/hooks/useFocoNoErro';
 import { ApiError } from '@/services/api';
 import { pedirRedefinicao } from '@/services/autenticacao';
 
-/** Tempo até poder pedir outro link; a API também limita (um e-mail a cada 2 minutos por conta). */
 const ESPERA_REENVIO_SEGUNDOS = 60;
 
-/** Pede o link para criar uma senha nova. A resposta é a mesma exista ou não a conta. */
 function EsqueciSenha() {
     const { formularioRef, focarErro } = useFocoNoErro();
     const tituloEnviadoRef = useRef<HTMLHeadingElement>(null);
@@ -32,7 +30,6 @@ function EsqueciSenha() {
         return () => clearTimeout(timer);
     }, [espera]);
 
-    // Ao trocar para "Confira seu e-mail", o leitor de tela anuncia o novo título.
     useEffect(() => {
         if (enviadoPara) tituloEnviadoRef.current?.focus();
     }, [enviadoPara]);

@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/** Configurações gerais da aplicação. {@code @EnableAsync} faz os e-mails saírem em segundo plano. */
 @Configuration
 @EnableScheduling
 @EnableAsync

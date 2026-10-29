@@ -10,7 +10,6 @@ interface FieldProps {
     hint?: string;
     /** Texto do contador, por exemplo `17/90`. */
     counter?: string;
-    /** Link ou botão na linha do rótulo, à direita (por exemplo, "Esqueci minha senha"). */
     action?: ReactNode;
     error?: string;
     children: ReactNode;

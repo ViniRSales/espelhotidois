@@ -39,16 +39,9 @@ export async function bairroDasCoordenadas({ lat, lon }: Coordenadas): Promise<B
   };
 }
 
-// Sugestões enquanto a pessoa digita: o Nominatim proíbe autocompletar, então usamos o Photon
-// (também com dados do OpenStreetMap, feito para busca durante a digitação). Uso justo: a busca
-// só começa com 3 letras e espera a pessoa parar de digitar.
-// https://photon.komoot.io
-
 const PHOTON = 'https://photon.komoot.io/api/';
-/** Retângulo que cobre o Brasil (oeste, sul, leste, norte). */
 const BRASIL = '-74,-34,-34,6';
 
-/** Bairro escolhido na lista, já separado em bairro, cidade e sigla do estado. */
 export type LocalSugerido = { bairro: string; cidade: string; uf: string };
 
 const UFS: Record<string, string> = {
@@ -63,12 +56,10 @@ type FeaturePhoton = {
   properties: Partial<Record<'name' | 'city' | 'county' | 'state' | 'countrycode' | 'osm_key', string>>;
 };
 
-/** "Savassi, Belo Horizonte - MG". */
 export function formatarLocal({ bairro, cidade, uf }: LocalSugerido) {
   return `${bairro}, ${cidade} - ${uf}`;
 }
 
-/** Bairros do Brasil cujo nome combina com o texto digitado, sem repetidos. */
 export async function buscarBairros(texto: string, signal?: AbortSignal): Promise<LocalSugerido[]> {
   const parametros = new URLSearchParams({ q: texto, limit: '10', bbox: BRASIL });
   parametros.append('layer', 'district');
@@ -80,7 +71,6 @@ export async function buscarBairros(texto: string, signal?: AbortSignal): Promis
   const vistos = new Set<string>();
   const sugestoes: LocalSugerido[] = [];
   for (const { properties: p } of features) {
-    // Só bairros de verdade (place ou limite administrativo); ignora condomínios, ruas e afins.
     if (p.countrycode !== 'BR' || (p.osm_key !== 'place' && p.osm_key !== 'boundary')) continue;
     const cidade = p.city ?? p.county;
     const uf = p.state ? UFS[p.state] : undefined;
@@ -96,11 +86,6 @@ export async function buscarBairros(texto: string, signal?: AbortSignal): Promis
 
 type EnderecoComEstado = Endereco & { state?: string; 'ISO3166-2-lvl4'?: string; country_code?: string };
 
-/**
- * Bairro, cidade e UF de um ponto, para o "Usar minha localização atual" do cadastro de conta. Faz o mesmo que
- * `bairroDasCoordenadas` (usada no cadastro de doação), mas também devolve o estado. `null` fora do Brasil ou
- * quando o ponto não tem bairro.
- */
 export async function localDasCoordenadas({ lat, lon }: Coordenadas): Promise<LocalSugerido | null> {
   const { address = {} } = await consultar<{ address?: EnderecoComEstado }>('/reverse', {
     lat: String(lat),
@@ -110,7 +95,6 @@ export async function localDasCoordenadas({ lat, lon }: Coordenadas): Promise<Lo
   });
   const bairro = address.suburb ?? address.neighbourhood ?? address.quarter ?? address.city_district;
   const cidade = address.city ?? address.town ?? address.village ?? address.municipality;
-  // "BR-MG" → "MG"; se não vier, tenta pelo nome do estado.
   const uf = address['ISO3166-2-lvl4']?.replace(/^BR-/, '') ?? (address.state ? UFS[address.state] : undefined);
   if (address.country_code && address.country_code !== 'br') return null;
   return bairro && cidade && uf ? { bairro, cidade, uf } : null;

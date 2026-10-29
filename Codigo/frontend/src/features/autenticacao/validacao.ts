@@ -1,6 +1,3 @@
-// Regras do cadastro e do login. São as mesmas da API (CadastroRequisicao e LoginRequisicao):
-// a API confere de novo, isto aqui só evita uma ida e volta e mostra o erro na hora.
-
 import type { ApiError } from '@/services/api';
 import type { LocalSugerido } from '@/services/localizacao';
 import type { TipoConta } from '@/types/autenticacao';
@@ -15,9 +12,7 @@ export type FormularioCadastro = {
   tipo: TipoConta;
   nome: string;
   email: string;
-  /** Como aparece no campo, com a máscara. */
   telefone: string;
-  /** Bairro escolhido na lista de sugestões; a API recebe bairro, cidade e UF separados. */
   local: LocalSugerido | null;
   senha: string;
 };
@@ -36,7 +31,6 @@ export function soDigitos(texto: string) {
   return texto.replace(/\D/g, '');
 }
 
-/** Máscara do telefone com DDD: `(31) 3333-4444` ou `(31) 99999-8888`, aplicada enquanto a pessoa digita. */
 export function formatarTelefone(valor: string) {
   const digitos = soDigitos(valor).slice(0, 11);
   if (digitos.length === 0) return '';
@@ -70,7 +64,6 @@ export function validarCadastro(formulario: FormularioCadastro): Erros<Formulari
   return erros;
 }
 
-/** Mesma regra da senha do cadastro (usada também na redefinição). */
 export function erroDaSenha(senha: string) {
   if (senha.length < LIMITES.senha.minimo) return 'A senha precisa ter pelo menos 8 caracteres.';
   if (senha.length > LIMITES.senha.maximo) return 'Use no máximo 72 caracteres.';
@@ -89,10 +82,8 @@ export function temErros(erros: object) {
   return Object.values(erros).some(Boolean);
 }
 
-/** Campos da API que, no formulário, ficam juntos num campo só. */
 const CAMPOS_AGRUPADOS: Record<string, string> = { bairro: 'local', cidade: 'local', uf: 'local' };
 
-/** Erros por campo devolvidos pela API (400). Bairro, cidade e UF caem no campo único de localização. */
 export function errosDaApi<T>(erro: ApiError): Erros<T> {
   return Object.fromEntries(
     erro.campos.map(({ campo, mensagem }) => [CAMPOS_AGRUPADOS[campo] ?? campo, mensagem]),

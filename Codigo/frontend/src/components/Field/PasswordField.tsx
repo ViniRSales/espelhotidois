@@ -8,11 +8,9 @@ interface PasswordFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
     label: string;
     hint?: string;
     error?: string;
-    /** Link na linha do rótulo (por exemplo, "Esqueci minha senha"). */
     action?: ReactNode;
 }
 
-/** Campo de senha com o botão "Mostrar senha", que evita erro de digitação sem pedir a senha duas vezes. */
 function PasswordField({ label, hint, error, action, className, ...props }: PasswordFieldProps) {
     const id = useId();
     const [visivel, setVisivel] = useState(false);
@@ -39,7 +37,6 @@ function PasswordField({ label, hint, error, action, className, ...props }: Pass
                     }
                 >
                     {visivel ? <EyeOff size={18} aria-hidden /> : <Eye size={18} aria-hidden />}
-                    {/* No celular aparece só "Mostrar", mas o leitor de tela continua lendo "Mostrar senha". */}
                     <span>
                         {visivel ? 'Ocultar' : 'Mostrar'}{' '}
                         <span className='max-sm:sr-only'>senha</span>

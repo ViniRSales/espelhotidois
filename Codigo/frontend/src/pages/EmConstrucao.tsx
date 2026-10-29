@@ -3,7 +3,6 @@ import { Link } from 'react-router';
 
 import { buttonClasses } from '@/components/Button/buttonStyles';
 
-/** Página provisória para rotas que outras tasks vão implementar (por exemplo, a página da doação e o bate-papo). */
 function EmConstrucao() {
     return (
         <section className='mx-auto flex max-w-xl flex-col items-center gap-4 py-16 text-center'>

@@ -1,11 +1,7 @@
-// Onde o token de login fica guardado no navegador.
-// "Manter conectado" usa o localStorage (sobrevive a fechar o navegador); sem ele, o sessionStorage (só esta aba).
-
 const CHAVE = 'doapp.sessao';
 
 export type SessaoSalva = { token: string; expiraEm: string };
 
-/** O storage pode não existir ou lançar erro (modo privado, cookies bloqueados): nesses casos, segue sem salvar. */
 function storage(tipo: 'localStorage' | 'sessionStorage'): Storage | null {
   try {
     return window[tipo];
@@ -23,7 +19,6 @@ function ler(armazenamento: Storage | null): SessaoSalva | null {
   }
 }
 
-/** Sessão salva que ainda não venceu. Uma sessão vencida ou corrompida é apagada. */
 export function lerSessaoSalva(agora = Date.now()): SessaoSalva | null {
   const sessao = ler(storage('localStorage')) ?? ler(storage('sessionStorage'));
   if (!sessao) {
@@ -43,7 +38,7 @@ export function salvarSessao(sessao: SessaoSalva, manterConectado: boolean) {
   try {
     storage(manterConectado ? 'localStorage' : 'sessionStorage')?.setItem(CHAVE, JSON.stringify(sessao));
   } catch {
-    // Sem storage, a sessão vale só enquanto a página estiver aberta.
+    return;
   }
 }
 
@@ -52,7 +47,7 @@ export function apagarSessaoSalva() {
     try {
       armazenamento?.removeItem(CHAVE);
     } catch {
-      // Nada a apagar.
+      continue;
     }
   }
 }

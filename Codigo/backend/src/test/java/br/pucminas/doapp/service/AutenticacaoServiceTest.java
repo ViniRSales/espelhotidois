@@ -44,7 +44,6 @@ class AutenticacaoServiceTest {
     private final UsuarioRepository usuarios = mock(UsuarioRepository.class);
     private final TokenService tokens = mock(TokenService.class);
     private final ControleAcessoService acesso = mock(ControleAcessoService.class);
-    /** Custo baixo só para os testes ficarem rápidos. */
     private final BCryptPasswordEncoder senhas = new BCryptPasswordEncoder(4);
     private AutenticacaoService servico;
 
@@ -116,7 +115,6 @@ class AutenticacaoServiceTest {
 
     @Test
     void senhaComMaisDe72BytesERecusadaNoCadastro() {
-        // 40 letras acentuadas = 80 bytes em UTF-8: passa no limite de caracteres, mas não no do BCrypt.
         var dados = new CadastroRequisicao(TipoConta.PESSOA_FISICA, "Maria", "maria@email.com", "31999998888",
                 "Savassi", "BH", "MG", "ç".repeat(40));
 

@@ -2,8 +2,6 @@ spring:
   application:
     name: doapp
   profiles:
-    # Sem SPRING_PROFILES_ACTIVE a API sobe no perfil dev, que tem uma chave de JWT de desenvolvimento
-    # (application-dev.yml). Em produção, defina SPRING_PROFILES_ACTIVE=prod e JWT_SEGREDO.
     default: dev
   mongodb:
     uri: ${MONGODB_URI:mongodb://localhost:27017/doapp}
@@ -11,8 +9,6 @@ spring:
     mongodb:
       auto-index-creation: true
   mail:
-    # Servidor SMTP do e-mail de recuperação de senha. Em desenvolvimento é o Mailpit (application-dev.yml).
-    # Sem MAIL_HOST, o valor "false" desliga o envio: a API sobe e avisa no log, mas não envia e-mails.
     host: ${MAIL_HOST:false}
     port: ${MAIL_PORT:587}
     username: ${MAIL_USERNAME:}
@@ -31,8 +27,6 @@ spring:
 
 server:
   port: ${PORT:8080}
-  # Atrás de um proxy (Render, Railway, Nginx), use "native" para a API ver o IP de quem acessa (X-Forwarded-For).
-  # Sem isso, os limites de tentativas por IP contariam todo mundo como o mesmo IP do proxy.
   forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:none}
   error:
     include-stacktrace: never
@@ -43,7 +37,6 @@ management:
       exposure:
         include: health
   health:
-    # O servidor de e-mail fora do ar não deve derrubar a API no health check do deploy.
     mail:
       enabled: false
 
@@ -77,15 +70,12 @@ doapp:
         - image/png
         - image/webp
 
-  # Token de login (lido por config/JwtProperties).
   jwt:
-    # Chave que assina os tokens: pelo menos 32 caracteres, nunca commitada. Sem ela, a API não sobe.
     segredo: ${JWT_SEGREDO:}
     emissor: doapp
     duracao-padrao: 12h    # sem "manter conectado" (o front guarda só na aba aberta)
     duracao-estendida: 7d  # com "manter conectado" e logo depois de criar a conta
 
-  # "Esqueci minha senha" (lido por config/RecuperacaoSenhaProperties). O e-mail sai pelo SMTP de spring.mail.
   recuperacao-senha:
     validade: 30m            # o link do e-mail vale por este tempo e uma vez só
     intervalo-minimo: 2m     # no máximo um e-mail por conta neste intervalo

@@ -1,7 +1,6 @@
 import { SearchX } from 'lucide-react';
 import { useSearchParams } from 'react-router';
 
-/** Resultados da busca do cabeçalho. A busca de doações e pedidos na API entra com a issue da listagem. */
 function Busca() {
     const [parametros] = useSearchParams();
     const termo = parametros.get('q')?.trim() ?? '';

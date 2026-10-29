@@ -4,7 +4,6 @@ import br.pucminas.doapp.model.LocalizacaoConta;
 import br.pucminas.doapp.model.TipoConta;
 import br.pucminas.doapp.model.Usuario;
 
-/** Dados da própria conta. Só a pessoa logada recebe; nunca inclui o hash da senha. */
 public record UsuarioResposta(
         String id,
         TipoConta tipo,

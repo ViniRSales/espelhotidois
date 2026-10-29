@@ -62,13 +62,11 @@ public class SecurityConfig {
                 .oauth2ResourceServer(jwt -> jwt
                         .jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(naoAutenticado))
-                // A ordem importa: a primeira regra que combinar com a requisição vale.
                 .authorizeHttpRequests(regras -> regras
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/cadastro", "/api/auth/login",
                                 "/api/auth/esqueci-senha", "/api/auth/redefinir-senha").permitAll()
                         .requestMatchers("/api/auth/**").authenticated()
-                        // GETs com dados de quem está logado, que a regra geral abaixo deixaria públicos.
                         .requestMatchers(HttpMethod.GET, "/api/doacoes/rascunho").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .anyRequest().authenticated())

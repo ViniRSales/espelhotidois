@@ -26,15 +26,10 @@ export class ApiError extends Error {
 let token: string | null = null;
 let sessaoExpirada: (() => void) | null = null;
 
-/** Guarda o token de login; enviado em todas as chamadas como `Authorization: Bearer`. */
 export function definirToken(novoToken: string | null) {
   token = novoToken;
 }
 
-/**
- * Registra o que fazer quando a API recusa o token (401): expirado, revogado ou inválido.
- * Devolve a função que cancela o registro.
- */
 export function aoExpirarSessao(callback: () => void) {
   sessaoExpirada = callback;
   return () => {
@@ -68,7 +63,6 @@ export async function api<T>(caminho: string, { body, headers, ...opcoes }: Opco
   if (resposta.status === 204) return undefined as T;
 
   const dados = await resposta.json().catch(() => null);
-  // Só derruba a sessão se havia token: um 401 sem token é um login com senha errada, por exemplo.
   if (resposta.status === 401 && token) sessaoExpirada?.();
   if (!resposta.ok) {
     throw new ApiError(

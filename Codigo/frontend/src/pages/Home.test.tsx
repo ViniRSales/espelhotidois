@@ -41,7 +41,6 @@ describe('Home', () => {
         abrir();
 
         expect(await screen.findByText('Bem-vindos ao Doapp!')).toBeInTheDocument();
-        // Espera a verificação do token terminar: durante ela o convite também fica escondido.
         await vi.waitFor(() => expect(servico.buscarUsuarioAtual).toHaveBeenCalled());
         await act(async () => {});
         expect(screen.queryByRole('region', { name: 'Doe e receba' })).not.toBeInTheDocument();

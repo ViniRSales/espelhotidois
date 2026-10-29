@@ -1,9 +1,5 @@
 import { CircleAlert } from 'lucide-react';
 
-/**
- * Erro que não é de um campo (senha errada, sem conexão). Anunciado pelo leitor de tela (`role="alert"`)
- * e focável, para o foco ir até ele depois do envio.
- */
 function ErroGeral({ mensagem }: { mensagem: string }) {
     return (
         <div

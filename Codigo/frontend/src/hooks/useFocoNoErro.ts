@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-/**
- * Depois de um envio com erro, leva o foco ao primeiro campo inválido do formulário
- * (ou ao aviso geral, se nenhum campo estiver marcado). Ajuda quem usa teclado e leitor de tela.
- */
 export function useFocoNoErro() {
   const formularioRef = useRef<HTMLFormElement>(null);
   const [tentativa, setTentativa] = useState(0);

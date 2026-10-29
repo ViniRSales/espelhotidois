@@ -14,13 +14,11 @@ import org.springframework.stereotype.Service;
 import br.pucminas.doapp.config.RecuperacaoSenhaProperties;
 import jakarta.mail.MessagingException;
 
-/** Envia e-mails pelo servidor SMTP configurado em {@code spring.mail} (Mailpit em desenvolvimento). */
 @Service
 public class SmtpEnvioEmail implements EnvioEmail {
 
     private static final Logger log = LoggerFactory.getLogger(SmtpEnvioEmail.class);
 
-    /** {@code null} quando {@code spring.mail.host} não foi configurado: a API sobe, mas não envia e-mails. */
     private final JavaMailSender mailSender;
     private final String remetente;
 
@@ -48,7 +46,6 @@ public class SmtpEnvioEmail implements EnvioEmail {
             helper.setText(texto, html);
             mailSender.send(mensagem);
         } catch (MessagingException | MailException ex) {
-            // Não registra o destinatário nem o conteúdo: o e-mail leva um link de uso pessoal.
             log.error("Não foi possível enviar o e-mail '{}': {}", assunto, ex.getMessage());
         }
     }

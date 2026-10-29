@@ -6,10 +6,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/**
- * Pedido de "esqueci minha senha" (coleção {@code redefinicoes_senha}). Guarda só o SHA-256 do token enviado
- * por e-mail: quem ler o banco não consegue usar o link. O índice TTL apaga o pedido quando ele vence.
- */
 @Document("redefinicoes_senha")
 public class RedefinicaoSenha {
 
@@ -37,7 +33,6 @@ public class RedefinicaoSenha {
         this.expiraEm = expiraEm;
     }
 
-    /** O TTL do Mongo roda a cada minuto; por isso a validade também é conferida aqui. */
     public boolean venceu(Instant agora) {
         return !agora.isBefore(expiraEm);
     }

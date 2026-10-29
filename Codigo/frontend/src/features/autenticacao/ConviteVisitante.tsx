@@ -4,7 +4,6 @@ import { buttonClasses } from '@/components/Button/buttonStyles';
 
 import PerguntaComLink from './PerguntaComLink';
 
-/** Cartão da Home para quem não entrou: convida a criar conta ou entrar. */
 function ConviteVisitante() {
     return (
         <section

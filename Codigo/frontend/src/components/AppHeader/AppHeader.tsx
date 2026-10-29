@@ -10,7 +10,6 @@ import SearchBar from './SearchBar';
 
 const foco = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
 
-/** Atalhos à direita do cabeçalho (localização e notificações), só para quem entrou. */
 function Atalho({ para, rotulo, children }: { para: string; rotulo: string; children: React.ReactNode }) {
     return (
         <NavLink
@@ -24,11 +23,6 @@ function Atalho({ para, rotulo, children }: { para: string; rotulo: string; chil
     );
 }
 
-/**
- * Cabeçalho do app, como o "Header desktop" do Figma: logo, busca, navegação e atalhos.
- * Visitantes veem só o logo e a busca (o convite para entrar fica na Home). No celular, a navegação vai para a
- * barra fixa embaixo da tela (`NavegacaoInferior`), até 1024 px, onde a busca ficaria apertada demais.
- */
 function AppHeader() {
     const { situacao } = useAutenticacao();
     const logado = situacao === 'logado';
@@ -40,8 +34,6 @@ function AppHeader() {
                 <SearchBar className='flex-1 lg:max-w-xl' />
                 {logado && (
                     <>
-                        {/* A navegação ocupa a altura toda do cabeçalho: a linha da página atual encosta na borda de
-                            baixo, como na barra de navegação do celular (que encosta na de cima). */}
                         <nav aria-label='Principal' className='ml-auto self-stretch max-lg:hidden'>
                             <ul className='flex h-full gap-1'>
                                 {NAVEGACAO.map(({ rotulo, para, icone: Icone }) => (

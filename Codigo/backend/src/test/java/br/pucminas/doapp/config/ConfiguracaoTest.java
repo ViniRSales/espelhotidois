@@ -17,7 +17,6 @@ import org.springframework.util.unit.DataSize;
 /** Confere que o {@code application.yml} carrega as configurações da forma esperada. */
 class ConfiguracaoTest {
 
-    /** Só as propriedades do JWT, sem os beans que dependem do MongoDB. */
     @Configuration
     @EnableConfigurationProperties(JwtProperties.class)
     static class SoJwt {
@@ -68,7 +67,6 @@ class ConfiguracaoTest {
             assertThat(recuperacao.validade()).isEqualTo(Duration.ofMinutes(30));
             assertThat(recuperacao.intervaloMinimo()).isEqualTo(Duration.ofMinutes(2));
             assertThat(recuperacao.urlApp()).isEqualTo("http://localhost:5173");
-            // Só o perfil dev escreve o link no log.
             assertThat(recuperacao.registrarLinkNoLog()).isTrue();
         });
         contexto.withPropertyValues("spring.profiles.active=prod", "doapp.jwt.segredo=" + "a".repeat(40))

@@ -3,10 +3,6 @@ import { Link } from 'react-router';
 
 import logo from '@/assets/images/Doapp logo.svg';
 
-/**
- * Logo do Doapp, que leva ao início. O SVG é claro (para fundos escuros); aqui ele vira uma máscara pintada com a
- * cor do texto, para aparecer escuro no cabeçalho claro e acompanhar o tema.
- */
 function Logo({ className }: { className?: string }) {
     return (
         <Link

@@ -69,7 +69,6 @@ describe('CriarConta', () => {
             uf: 'MG',
             senha: 'segredo123',
         });
-        // Quem acabou de criar a conta fica conectado (localStorage).
         expect(localStorage.getItem('doapp.sessao')).not.toBeNull();
     });
 

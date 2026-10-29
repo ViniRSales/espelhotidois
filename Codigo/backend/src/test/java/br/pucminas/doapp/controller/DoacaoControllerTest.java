@@ -55,11 +55,9 @@ class DoacaoControllerTest {
     @MockitoBean
     private DoacaoService service;
 
-    /** Usado pelo JwtDecoder do SecurityConfig para recusar tokens encerrados pelo logout. */
     @MockitoBean
     private TokenRevogadoRepository tokensRevogados;
 
-    /** Usado pelo JwtDecoder para conferir se a sessão do token ainda vale. */
     @MockitoBean
     private UsuarioRepository usuarios;
 

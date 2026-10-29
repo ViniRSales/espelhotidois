@@ -31,7 +31,6 @@ import br.pucminas.doapp.repository.TokenRevogadoRepository;
 import br.pucminas.doapp.repository.UsuarioRepository;
 import br.pucminas.doapp.service.TokenService.TokenEmitido;
 
-/** Usa o encoder e o decoder de verdade do {@link JwtConfig}, para conferir o token de ponta a ponta. */
 class TokenServiceTest {
 
     static final JwtProperties JWT = new JwtProperties("segredo-de-teste-com-mais-de-32-caracteres", "doapp",
@@ -137,7 +136,6 @@ class TokenServiceTest {
 
     @Test
     void trocarASenhaEncerraOsTokensEmitidosAntesMesmoNoMesmoSegundo() {
-        // Tudo no mesmo instante: com a regra antiga, baseada no horário (em segundos), o token antigo passava.
         Instant agora = Instant.now();
         String antigo = servico(agora).emitir("u1", usuario.getVersaoSessao(), true).token();
 
@@ -145,7 +143,6 @@ class TokenServiceTest {
 
         assertThat(usuario.getVersaoSessao()).isEqualTo(1);
         assertThatThrownBy(() -> decoder.decode(antigo)).hasMessageContaining("troca de senha");
-        // Um login depois da troca, na versão nova, vale, mesmo no mesmo segundo.
         String novo = servico(agora).emitir("u1", usuario.getVersaoSessao(), true).token();
         assertThat(decoder.decode(novo).getSubject()).isEqualTo("u1");
     }

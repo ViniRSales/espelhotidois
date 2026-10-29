@@ -55,7 +55,6 @@ describe('AppHeader', () => {
         entrar();
         abrir('/adicionar');
 
-        // Uma navegação no cabeçalho (desktop) e outra embaixo (celular); o CSS mostra só uma por vez.
         const navegacoes = await screen.findAllByRole('navigation', { name: 'Principal' });
         expect(navegacoes).toHaveLength(2);
         for (const nav of navegacoes) {

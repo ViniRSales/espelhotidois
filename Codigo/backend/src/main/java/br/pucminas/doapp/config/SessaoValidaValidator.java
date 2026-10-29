@@ -12,11 +12,6 @@ import br.pucminas.doapp.repository.TokenRevogadoRepository;
 import br.pucminas.doapp.repository.UsuarioRepository;
 import br.pucminas.doapp.service.TokenService;
 
-/**
- * Além da assinatura e da validade, o token só vale se: não foi encerrado pelo logout, a conta ainda existe e
- * foi emitido na versão de sessão atual da conta, ou seja, depois da última troca de senha
- * ({@link Usuario#getVersaoSessao()}).
- */
 public class SessaoValidaValidator implements OAuth2TokenValidator<Jwt> {
 
     private final TokenRevogadoRepository revogados;
@@ -42,7 +37,6 @@ public class SessaoValidaValidator implements OAuth2TokenValidator<Jwt> {
         return OAuth2TokenValidatorResult.success();
     }
 
-    /** Tokens sem a claim (emitidos antes de ela existir) contam como versão 0. */
     private static int versao(Jwt token) {
         Object valor = token.getClaim(TokenService.VERSAO_SESSAO);
         return valor instanceof Number numero ? numero.intValue() : 0;

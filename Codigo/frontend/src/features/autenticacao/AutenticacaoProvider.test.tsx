@@ -35,7 +35,6 @@ describe('AutenticacaoProvider e rotas', () => {
         servico.buscarUsuarioAtual.mockReturnValue(new Promise((resolve) => { confirmar = resolve; }));
         abrirApp('/adicionar');
 
-        // Enquanto confere, não redireciona para o login.
         expect(screen.getByRole('status')).toHaveTextContent('Carregando…');
         confirmar(usuario());
 

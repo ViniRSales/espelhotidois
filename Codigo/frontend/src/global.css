@@ -86,8 +86,6 @@
 }
 
 @layer base {
-    /* Reserva sempre o espaço da barra de rolagem: sem isso, o cabeçalho e o conteúdo andam uns pixels
-       para o lado entre páginas curtas (sem barra) e compridas (com barra). */
     html {
         scrollbar-gutter: stable;
     }
@@ -96,12 +94,10 @@
         background-color: var(--color-background);
         color: var(--color-foreground);
         font-family: var(--font-label);
-        /* Permite que um bloco ocupe a largura toda da janela (100cqw) sem contar a barra de rolagem. */
         container-type: inline-size;
     }
 }
 
-/* Largura e respiro laterais das páginas; o cabeçalho e o conteúdo usam os mesmos, para ficarem alinhados. */
 @utility container-pagina {
     margin-inline: auto;
     width: 100%;
@@ -117,7 +113,6 @@
     }
 }
 
-/* Faz o bloco ocupar a largura toda da janela, mesmo dentro de um conteúdo com largura máxima. */
 @utility largura-total {
     width: 100cqw;
     margin-inline-start: calc(50% - 50cqw);

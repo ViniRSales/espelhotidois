@@ -7,7 +7,6 @@ import { buscarBairros, formatarLocal, type LocalSugerido } from '@/services/loc
 import Field from './Field';
 import { fieldDescriptionIds, inputClasses } from './fieldIds';
 
-/** A busca começa com 3 letras e espera a pessoa parar de digitar, para não sobrecarregar o serviço de mapas. */
 const MINIMO_BUSCA = 3;
 const ESPERA_BUSCA_MS = 300;
 
@@ -16,26 +15,19 @@ interface LocationFieldProps {
     hint?: string;
     placeholder?: string;
     error?: string;
-    /** Bairro escolhido na lista; `null` enquanto a pessoa só digitou. */
     value: LocalSugerido | null;
     onChange: (local: LocalSugerido | null) => void;
-    /** Botão na linha do rótulo, à direita (por exemplo, "Usar minha localização"). */
     action?: ReactNode;
 }
 
 type Resultado = { termo: string; sugestoes: LocalSugerido[]; falhou: boolean };
 
-/**
- * Campo único de bairro: a pessoa digita e escolhe uma sugestão, que já vem separada em bairro, cidade e UF.
- * Segue o padrão "combobox com lista" da WAI-ARIA: setas para navegar, Enter para escolher, Esc para fechar.
- */
 function LocationField({ label, hint, placeholder, error, value, onChange, action }: LocationFieldProps) {
     const id = useId();
     const listaId = `${id}-lista`;
     const { describedBy } = fieldDescriptionIds(id, { hint, error });
 
     const [texto, setTexto] = useState(value ? formatarLocal(value) : '');
-    // Um bairro escolhido de fora (pela localização atual) também aparece escrito no campo.
     const [valorMostrado, setValorMostrado] = useState(value);
     if (value !== valorMostrado) {
         setValorMostrado(value);
@@ -64,7 +56,6 @@ function LocationField({ label, hint, placeholder, error, value, onChange, actio
         };
     }, [buscavel, termo]);
 
-    // Só vale o resultado da busca feita para o texto que está no campo agora.
     const atual = buscavel && resultado?.termo === termo ? resultado : null;
     const sugestoes = atual?.sugestoes ?? [];
     const listaAberta = aberto && sugestoes.length > 0;
@@ -98,7 +89,6 @@ function LocationField({ label, hint, placeholder, error, value, onChange, actio
             const passo = evento.key === 'ArrowDown' ? 1 : -1;
             setAtivo((indiceAtivo + passo + sugestoes.length) % sugestoes.length);
         } else if (evento.key === 'Enter' && listaAberta && indiceAtivo >= 0) {
-            // Escolhe a sugestão em vez de enviar o formulário.
             evento.preventDefault();
             escolher(sugestoes[indiceAtivo]);
         } else if (evento.key === 'Escape' && aberto) {
@@ -147,7 +137,6 @@ function LocationField({ label, hint, placeholder, error, value, onChange, actio
                             id={`${listaId}-${indice}`}
                             role='option'
                             aria-selected={indice === indiceAtivo}
-                            // Mantém o foco no campo ao clicar, para o blur não fechar a lista antes do clique.
                             onMouseDown={(evento) => evento.preventDefault()}
                             onClick={() => escolher(local)}
                             className={clsx(

@@ -1,4 +1,3 @@
-// Dados e montagem comuns aos testes da autenticação.
 import { render } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { createMemoryRouter, RouterProvider, type InitialEntry } from 'react-router';
@@ -30,10 +29,6 @@ export function sessao(campos: Partial<Sessao> = {}): Sessao {
     return { token: 'token-1', expiraEm: '2099-01-01T00:00:00Z', usuario: usuario(), ...campos };
 }
 
-/**
- * Monta as rotas como no App: Home pública, /adicionar protegida, entrar e criar conta só para visitantes.
- * `extra` é renderizado junto, dentro do provider (para acessar o contexto no teste).
- */
 export function abrirApp(entrada: InitialEntry = '/', extra?: ReactNode) {
     const router = createMemoryRouter(
         [

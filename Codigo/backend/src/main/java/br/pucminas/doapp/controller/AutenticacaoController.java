@@ -25,16 +25,10 @@ import br.pucminas.doapp.service.RecuperacaoSenhaService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-/**
- * Cadastro, login e recuperação de senha são públicos; {@code /eu} e {@code /logout} exigem login
- * (veja o {@code SecurityConfig}).
- */
 @RestController
 @RequestMapping("/api/auth")
 public class AutenticacaoController {
 
-    // Limites contra força bruta e abuso, por IP. No login, a conta também conta (com o IP, para que alguém
-    // de fora não consiga bloquear a conta de outra pessoa errando a senha dela).
     static final int ERROS_LOGIN_POR_CONTA = 5;
     static final int ERROS_LOGIN_POR_IP = 20;
     static final Duration JANELA_LOGIN = Duration.ofMinutes(15);
@@ -90,7 +84,6 @@ public class AutenticacaoController {
         service.sair(token);
     }
 
-    /** Sempre 204, exista ou não a conta: a resposta não revela quais e-mails têm cadastro. */
     @PostMapping("/esqueci-senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void pedirRedefinicao(@Valid @RequestBody PedidoRedefinicaoRequisicao dados, HttpServletRequest requisicao) {
@@ -104,7 +97,6 @@ public class AutenticacaoController {
         recuperacao.redefinir(dados.token(), dados.senha());
     }
 
-    /** Barra depois de {@value #PEDIDOS_POR_IP_POR_HORA} pedidos do mesmo IP em uma hora (contas falsas, spam de e-mail). */
     private void contarPedido(String chave) {
         limite.conferir(chave, PEDIDOS_POR_IP_POR_HORA, UMA_HORA, MUITOS_PEDIDOS);
         limite.registrar(chave, UMA_HORA);

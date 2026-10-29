@@ -11,7 +11,6 @@ interface ProgressStepperProps {
     onStepClick?: (step: number) => void;
 }
 
-/** Indicador de progresso de um fluxo em etapas. Até 1024 px, mostra só os círculos e o nome da etapa atual. */
 function ProgressStepper({ steps, currentStep, maxStep = currentStep, onStepClick }: ProgressStepperProps) {
     return (
         <nav aria-label='Etapas' className='flex flex-col gap-3'>

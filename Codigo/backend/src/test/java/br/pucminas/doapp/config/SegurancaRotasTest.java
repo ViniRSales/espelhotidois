@@ -41,7 +41,6 @@ import br.pucminas.doapp.service.CategoriaService;
 import br.pucminas.doapp.service.DoacaoService;
 import br.pucminas.doapp.service.TokenService;
 
-/** Rotas públicas e protegidas da API, com tokens de verdade (assinados com a chave do perfil dev). */
 @WebMvcTest(controllers = { CategoriaController.class, DoacaoController.class })
 @Import(SecurityConfig.class)
 class SegurancaRotasTest {
@@ -110,7 +109,6 @@ class SegurancaRotasTest {
     @Test
     void tokenValidoAutenticaComOIdDoUsuarioComoNome() throws Exception {
         when(doacoes.buscarRascunho()).thenAnswer(chamada -> {
-            // É este nome que o ControleAcessoService usa como id do usuário logado.
             assertThat(SecurityContextHolder.getContext().getAuthentication().getName()).isEqualTo("u1");
             return Optional.empty();
         });
@@ -132,7 +130,6 @@ class SegurancaRotasTest {
     @Test
     void tokenAdulteradoDevolve401() throws Exception {
         String valido = token("u1", Instant.now());
-        // Troca a assinatura: o conteúdo continua legível, mas não foi assinado com a nossa chave.
         String adulterado = valido.substring(0, valido.lastIndexOf('.') + 1) + "assinaturaFalsa";
 
         mvc.perform(post("/api/doacoes").header(HttpHeaders.AUTHORIZATION, bearer(adulterado))

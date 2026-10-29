@@ -56,7 +56,6 @@ class RecuperacaoSenhaServiceTest {
         when(usuarios.findById("u1")).thenReturn(Optional.of(maria));
     }
 
-    /** Pede o link e devolve o token que foi parar no e-mail. */
     private String pedirELerToken() {
         servico.pedir("maria@email.com");
         var texto = ArgumentCaptor.forClass(String.class);
@@ -70,7 +69,7 @@ class RecuperacaoSenhaServiceTest {
 
         var salvo = ArgumentCaptor.forClass(RedefinicaoSenha.class);
         verify(redefinicoes).save(salvo.capture());
-        assertThat(token).hasSize(43); // 32 bytes em Base64 URL, sem preenchimento
+        assertThat(token).hasSize(43);
         assertThat(salvo.getValue().getTokenHash()).isEqualTo(RecuperacaoSenhaService.hash(token)).isNotEqualTo(token);
         assertThat(salvo.getValue().getUsuarioId()).isEqualTo("u1");
         assertThat(salvo.getValue().getExpiraEm()).isEqualTo(AGORA.plus(Duration.ofMinutes(30)));
@@ -119,7 +118,6 @@ class RecuperacaoSenhaServiceTest {
 
         assertThat(senhas.matches("senhaNova99", maria.getSenhaHash())).isTrue();
         assertThat(senhas.matches("senhaAntiga1", maria.getSenhaHash())).isFalse();
-        // A versão da sessão sobe: todos os tokens anteriores deixam de valer.
         assertThat(maria.getVersaoSessao()).isEqualTo(1);
         assertThat(maria.getSenhaAlteradaEm()).isEqualTo(AGORA);
         verify(redefinicoes).deleteByUsuarioId("u1");

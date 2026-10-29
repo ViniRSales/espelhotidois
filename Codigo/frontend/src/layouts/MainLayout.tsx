@@ -17,7 +17,6 @@ function MainLayout() {
                 Pular para o conteúdo
             </a>
             <AppHeader />
-            {/* No celular e no tablet, quem entrou tem a barra de navegação embaixo; o espaço extra evita cobrir o conteúdo. */}
             <main id='conteudo' className={clsx('container-pagina py-5', logado && 'max-lg:pb-24')}>
                 <Outlet />
             </main>

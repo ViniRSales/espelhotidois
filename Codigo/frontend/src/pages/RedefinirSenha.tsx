@@ -19,10 +19,6 @@ export type EstadoSenhaAlterada = { senhaAlterada: true };
 
 const LINK_INVALIDO = 'Este link não vale mais. Peça um novo.';
 
-/**
- * Cria a senha nova com o token do link enviado por e-mail (`?token=`). Abre logado ou não:
- * a API encerra todas as sessões da conta, então quem estava logado neste aparelho também sai.
- */
 function RedefinirSenha() {
     const [parametros] = useSearchParams();
     const token = parametros.get('token') ?? '';
@@ -48,13 +44,11 @@ function RedefinirSenha() {
         setEnviando(true);
         try {
             await redefinirSenha(token, senha);
-            // O token deste aparelho deixou de valer; encerra a sessão local antes de ir para o login.
             if (situacao === 'logado') await sair();
             const estado: EstadoSenhaAlterada = { senhaAlterada: true };
             navigate('/entrar', { replace: true, state: estado });
         } catch (e) {
             if (e instanceof ApiError && e.erroDoCampo('token')) {
-                // Link vencido, já usado ou inventado: a API devolve o erro no campo "token".
                 setErroGeral(LINK_INVALIDO);
             } else if (e instanceof ApiError && e.erroDoCampo('senha')) {
                 setErro(e.erroDoCampo('senha'));
