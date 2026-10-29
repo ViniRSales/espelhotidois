@@ -1,0 +1,52 @@
+# Sobe o Doapp completo para desenvolvimento: banco, API, front-end e caixa de e-mails (Mailpit).
+# Uso: docker compose up --build   (a partir da pasta Codigo/)
+services:
+  mongo:
+    image: mongo:8
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-dados:/data/db
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      # Para usar o MongoDB Atlas, defina MONGODB_URI no arquivo .env
+      MONGODB_URI: ${MONGODB_URI:-mongodb://mongo:27017/doapp}
+      CORS_ORIGENS: ${CORS_ORIGENS:-http://localhost:5173}
+      # dev usa uma chave de JWT de desenvolvimento (application-dev.yml); em prod, defina JWT_SEGREDO no servidor
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      # E-mails (recuperação de senha) vão para o Mailpit; o link aponta para o front-end
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      APP_URL: ${APP_URL:-http://localhost:5173}
+    volumes:
+      # Fotos das doações (doapp.doacoes.fotos.diretorio), preservadas entre reinícios do container
+      - fotos-doacoes:/app/uploads/fotos
+    depends_on:
+      - mongo
+      - mailpit
+
+  # Caixa de entrada falsa: recebe os e-mails da API sem entregar a ninguém. Veja em http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.21
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_PROXY: http://backend:8080
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - backend
+
+volumes:
+  mongo-dados:
+  fotos-doacoes:

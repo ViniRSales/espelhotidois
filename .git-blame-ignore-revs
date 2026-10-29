@@ -1,0 +1,9 @@
+# Commits que só mudam o final de linha (LF/CRLF), sem alterar conteúdo.
+# O GitHub ignora estes commits no "Blame", então cada linha continua mostrando quem de fato a escreveu.
+# Localmente: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# chore/gitattributes: arquivos da main convertidos para LF
+84b5afa93817256b8da0ece720f395cc4eac78f1
+
+# PR #37 (Plínio): arquivos do cadastro de pedido convertidos para LF
+f9ea087ca30dd1c8423b507846b04006012023a3

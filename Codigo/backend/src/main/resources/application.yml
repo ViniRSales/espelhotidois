@@ -1,0 +1,94 @@
+spring:
+  application:
+    name: doapp
+  profiles:
+    # Sem SPRING_PROFILES_ACTIVE a API sobe no perfil dev, que tem uma chave de JWT de desenvolvimento
+    # (application-dev.yml). Em produção, defina SPRING_PROFILES_ACTIVE=prod e JWT_SEGREDO.
+    default: dev
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/doapp}
+  data:
+    mongodb:
+      auto-index-creation: true
+  mail:
+    # Servidor SMTP do e-mail de recuperação de senha. Em desenvolvimento é o Mailpit (application-dev.yml).
+    # Sem MAIL_HOST, o valor "false" desliga o envio: a API sobe e avisa no log, mas não envia e-mails.
+    host: ${MAIL_HOST:false}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${MAIL_SMTP_AUTH:true}
+      mail.smtp.starttls.enable: ${MAIL_SMTP_STARTTLS:true}
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+  servlet:
+    multipart:
+      # Mantenha max-file-size igual a doapp.doacoes.fotos.tamanho-maximo.
+      max-file-size: 5MB
+      max-request-size: 6MB
+
+server:
+  port: ${PORT:8080}
+  # Atrás de um proxy (Render, Railway, Nginx), use "native" para a API ver o IP de quem acessa (X-Forwarded-For).
+  # Sem isso, os limites de tentativas por IP contariam todo mundo como o mesmo IP do proxy.
+  forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:none}
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  health:
+    # O servidor de e-mail fora do ar não deve derrubar a API no health check do deploy.
+    mail:
+      enabled: false
+
+doapp:
+  cors:
+    origens-permitidas: ${CORS_ORIGENS:http://localhost:5173}
+
+  # Fuso usado para datas como "hoje" (validade) e para o prazo das doações.
+  fuso-horario: America/Sao_Paulo
+
+  # Regras do cadastro de solicitações (pedidos). O front-end repete estes limites em src/config/solicitacao.ts.
+  solicitacoes:
+    titulo-maximo: 90
+    descricao-maximo: 500
+    fotos-maximo: 1 # foto de referência opcional; tamanho e tipos seguem doapp.doacoes.fotos
+
+  # Regras do cadastro de doações. O front-end repete estes limites em src/config/doacao.ts.
+  doacoes:
+    dias-disponivel: 30
+    expiracao-cron: "0 0 3 * * *" # todo dia às 03:00
+    titulo-maximo: 90
+    descricao-maximo: 300
+    tags-maximo: 5
+    fotos:
+      diretorio: ${DOAPP_FOTOS_DIRETORIO:./uploads/fotos}
+      minimo: 1
+      maximo: 10
+      tamanho-maximo: 5MB
+      tipos-permitidos:
+        - image/jpeg
+        - image/png
+        - image/webp
+
+  # Token de login (lido por config/JwtProperties).
+  jwt:
+    # Chave que assina os tokens: pelo menos 32 caracteres, nunca commitada. Sem ela, a API não sobe.
+    segredo: ${JWT_SEGREDO:}
+    emissor: doapp
+    duracao-padrao: 12h    # sem "manter conectado" (o front guarda só na aba aberta)
+    duracao-estendida: 7d  # com "manter conectado" e logo depois de criar a conta
+
+  # "Esqueci minha senha" (lido por config/RecuperacaoSenhaProperties). O e-mail sai pelo SMTP de spring.mail.
+  recuperacao-senha:
+    validade: 30m            # o link do e-mail vale por este tempo e uma vez só
+    intervalo-minimo: 2m     # no máximo um e-mail por conta neste intervalo
+    url-app: ${APP_URL:http://localhost:5173}
+    remetente: ${DOAPP_EMAIL_REMETENTE:Doapp <nao-responda@doapp.com.br>}
+    registrar-link-no-log: false

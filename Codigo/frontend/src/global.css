@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@theme inline {
+    --color-background: var(--theme-background);
+    --color-surface: var(--theme-surface);
+    --color-border: var(--theme-border);
+    --color-foreground: var(--theme-foreground);
+    --color-muted: var(--theme-muted);
+    --color-accent: var(--theme-accent);
+    --color-accent-foreground: var(--theme-accent-foreground);
+    --color-highlight: var(--theme-highlight);
+    --color-danger: var(--theme-danger);
+
+    --font-display: var(--theme-font-display);
+    --font-label: var(--theme-font-label);
+}
+
+@theme {
+    --text-display: 40px;
+    --text-display--font-weight: 700;
+    --text-display--line-height: 1;
+
+    --text-title-1: 36px;
+    --text-title-1--font-weight: 700;
+    --text-title-1--line-height: 1;
+
+    --text-title-2: 28px;
+    --text-title-2--font-weight: 700;
+    --text-title-2--line-height: 1;
+
+    --text-title-3: 24px;
+    --text-title-3--font-weight: 700;
+    --text-title-3--line-height: 1;
+
+    --text-section: 20px;
+    --text-section--font-weight: 600;
+    --text-section--line-height: 1;
+
+    --text-subtitle-l: 18px;
+    --text-subtitle-l--font-weight: 600;
+    --text-subtitle-l--line-height: 1;
+
+    --text-body-l: 16px;
+    --text-body-l--font-weight: 400;
+    --text-body-l--line-height: 1;
+
+    --text-subtitle: 16px;
+    --text-subtitle--font-weight: 600;
+    --text-subtitle--line-height: 1;
+
+    --text-card-title: 16px;
+    --text-card-title--font-weight: 700;
+    --text-card-title--line-height: 1;
+
+    --text-button: 16px;
+    --text-button--font-weight: 500;
+    --text-button--line-height: 1;
+
+    --text-body: 14px;
+    --text-body--font-weight: 400;
+    --text-body--line-height: 1;
+
+    --text-label: 14px;
+    --text-label--font-weight: 500;
+    --text-label--line-height: 1;
+
+    --text-subtitle-s: 14px;
+    --text-subtitle-s--font-weight: 600;
+    --text-subtitle-s--line-height: 1;
+
+    --text-link: 14px;
+    --text-link--font-weight: 500;
+    --text-link--line-height: 1;
+
+    --text-caption: 12px;
+    --text-caption--font-weight: 400;
+    --text-caption--line-height: 1;
+
+    --text-caption-medium: 12px;
+    --text-caption-medium--font-weight: 500;
+    --text-caption-medium--line-height: 1;
+
+    --text-caption-bold: 12px;
+    --text-caption-bold--font-weight: 700;
+    --text-caption-bold--line-height: 1;
+}
+
+@layer base {
+    /* Reserva sempre o espaço da barra de rolagem: sem isso, o cabeçalho e o conteúdo andam uns pixels
+       para o lado entre páginas curtas (sem barra) e compridas (com barra). */
+    html {
+        scrollbar-gutter: stable;
+    }
+
+    body {
+        background-color: var(--color-background);
+        color: var(--color-foreground);
+        font-family: var(--font-label);
+        /* Permite que um bloco ocupe a largura toda da janela (100cqw) sem contar a barra de rolagem. */
+        container-type: inline-size;
+    }
+}
+
+/* Largura e respiro laterais das páginas; o cabeçalho e o conteúdo usam os mesmos, para ficarem alinhados. */
+@utility container-pagina {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 90rem;
+    padding-inline: 1rem;
+
+    @variant md {
+        padding-inline: 2.5rem;
+    }
+
+    @variant xl {
+        padding-inline: 5rem;
+    }
+}
+
+/* Faz o bloco ocupar a largura toda da janela, mesmo dentro de um conteúdo com largura máxima. */
+@utility largura-total {
+    width: 100cqw;
+    margin-inline-start: calc(50% - 50cqw);
+}

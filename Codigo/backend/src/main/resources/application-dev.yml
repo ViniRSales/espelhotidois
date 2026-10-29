@@ -1,0 +1,19 @@
+# Perfil de desenvolvimento (o padrão quando SPRING_PROFILES_ACTIVE não é definido).
+# Só serve para rodar a API e os testes sem configurar nada. NUNCA use em produção:
+# qualquer pessoa que leia este arquivo consegue criar tokens válidos com esta chave.
+spring:
+  mail:
+    # Mailpit: recebe os e-mails sem entregar a ninguém. Veja em http://localhost:8025.
+    # No Docker Compose, MAIL_HOST=mailpit.
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+doapp:
+  jwt:
+    segredo: ${JWT_SEGREDO:chave-de-desenvolvimento-do-doapp-nao-use-em-producao}
+  recuperacao-senha:
+    # Escreve o link de redefinição no log, para testar mesmo sem o Mailpit rodando.
+    registrar-link-no-log: true

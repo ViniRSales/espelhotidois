@@ -1,0 +1,33 @@
+cff-version: 1.0.1
+message: Please cite this software using these metadata.
+title: Doapp
+authors:
+  - family-names: Freitas da Silva
+    given-names: Ana Clara
+  - family-names: Silva Conceição
+    given-names: Arthur Augusto
+  - family-names: Bambirra
+    given-names: Enzo
+  - family-names: Sivolella
+    given-names: Lucas
+  - family-names: Ferreira
+    given-names: Plínio Ângelo
+  - family-names: Ramos Sales
+    given-names: Vinicius
+  - name-suffix: Professor
+    affiliation: PUC Minas
+    family-names: Lacerda Marques
+    given-names: Ramon
+  - name-suffix: Professor
+    affiliation: PUC Minas
+    family-names: Gomes
+    given-names: Débora Line
+keywords:
+  - doações
+  - ODS 11
+  - React
+  - Spring Boot
+repository-code: https://github.com/ICEI-PUC-Minas-PPLES-TI/plf-es-2026-2-ti2-7600100-doapp
+license: CC-BY-4.0
+version: 1.0.0
+date-released: 2026-

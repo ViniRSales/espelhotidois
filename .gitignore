@@ -1,0 +1,54 @@
+# Dependências e build
+node_modules/
+dist/
+build/
+coverage/
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos do sistema e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Arquivos locais
+CLAUDE.md
+
+# Java / Spring Boot
+target/
+.gradle/
+*.class
+*.jar
+*.war
+!gradle/wrapper/gradle-wrapper.jar
+HELP.md
+
+# Fotos enviadas para a API em desenvolvimento (doapp.doacoes.fotos.diretorio)
+Codigo/backend/uploads/
+
+# Spring: configurações locais e segredos
+application-local.*
+application-secret*.*
+
+# IDEs (Java)
+*.iml
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated/
+.sts4-cache/
+.springBeans
+nbproject/
+
+# Claude Code (local)
+.claude/settings.local.json

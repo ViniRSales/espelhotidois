@@ -1,0 +1,18 @@
+# Finais de linha padronizados em LF para todo o projeto, em qualquer sistema operacional.
+# Sem isso, quem usa Windows converte arquivos inteiros para CRLF e o diff mostra o arquivo todo como alterado.
+* text=auto eol=lf
+
+# Scripts do Windows precisam de CRLF
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binários
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.docx binary
+*.jar binary
